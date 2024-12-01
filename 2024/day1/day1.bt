@@ -6,11 +6,11 @@ BEGIN
 tracepoint:syscalls:sys_enter_read
 / comm == "cat" /
 {
+    $num = 0;
+
     if (*args->buf == 0) {
         return;
     }
-
-    $num = 0;
 
     $i = 0;
     while ($i < 20) {
