@@ -1,0 +1,73 @@
+BEGIN
+{
+    @index = 0;
+}
+
+tracepoint:syscalls:sys_enter_read
+/ comm == "cat" /
+{
+    if (*args->buf == 0) {
+        return;
+    }
+
+    $num = 0;
+
+    $i = 0;
+    while ($i < 20) {
+        $char = *(args->buf + $i);
+
+        // newline
+        if ($char == 10) {
+            @right[@index] = $num;
+            break;
+        }
+
+        // space
+        if ($char == 32 && $num != 0) {
+            @left[@index] = $num;
+            $num = 0;
+        }
+
+        if ($char >= 48 && $char <= 57) {
+            $digit = $char - 48;
+            $num = $num * 10 + $digit;
+        }
+
+        $i++;
+    }
+
+    @index++;
+}
+
+END
+{
+    $i = 0;
+    $sum = 0;
+    $count = len(@left);
+
+    // finding the minimum in each iteration
+    // and calculate the distance
+    while ($i++ < $count) {
+        @min_key = -1;
+        for ($kv : @left) {
+            if (@min_key == -1 || @left[@min_key] > $kv.1) {
+                @min_key = $kv.0;
+            }
+        }
+        $distance = @left[@min_key];
+        delete(@left[@min_key]);
+
+        @min_key = -1;
+        for ($kv : @right) {
+            if (@min_key == -1 || @right[@min_key] > $kv.1) {
+                @min_key = $kv.0;
+            }
+        }
+        $distance -= @right[@min_key];
+        delete(@right[@min_key]);
+        
+        $sum += $distance > 0 ? $distance : -$distance;
+    }
+
+    print($sum);
+}
