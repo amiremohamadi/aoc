@@ -1,17 +1,17 @@
-# Advent of Code 2024 | Day 1 | eBPF
-https://adventofcode.com/2024/day/1
+# Advent of Code 2024 | eBPF
+https://adventofcode.com/2024
 
-tried to solve day 1 with bpftrace — because, why not? 🎄✨
+trying to solve aoc2024 using bpftrace — because, why not? 🎄✨
 
 ## Usage
 #### 1. Run the bpftrace script:
 ```sh
-$ bpftrace ./day1.bt
+$ bpftrace ./day1/day1.bt
 ```
 
 #### 2. Use the helper script to pass the input:
 ```sh
-$ ./read.sh
+$ ./read.sh ./day1/input.txt
 ```
 #### 3. Retrive the result:
 To display the final result, send a SIGINT to the running bpftrace process.
